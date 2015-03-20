@@ -1,0 +1,26 @@
+[ui]
+username=Dmitry Korlas <dmitry.korlas@gmail.com>
+
+[alias]
+# graphical log
+glog = !$HG log -G
+
+# undo local changes (new files will not be removed)
+reset = !$HG update -C
+
+[extensions]
+# http://mercurial.selenic.com/wiki/ShelveExtension
+shelve=
+
+# http://mercurial.selenic.com/wiki/ExtdiffExtension
+hgext.extdiff =
+
+# http://mercurial.selenic.com/wiki/ColorExtension
+color =
+
+# http://mercurial.selenic.com/wiki/GraphlogExtension
+graphlog =
+
+[extdiff]
+# run via command: $ hg vdiff
+cmd.vdiff = meld
