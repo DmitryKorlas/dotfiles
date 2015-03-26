@@ -21,6 +21,9 @@ color =
 # http://mercurial.selenic.com/wiki/GraphlogExtension
 graphlog =
 
+# http://mercurial.selenic.com/wiki/RebaseExtension
+rebase =
+
 [extdiff]
 # run via command: $ hg vdiff
 cmd.vdiff = meld
