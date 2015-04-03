@@ -8,9 +8,13 @@ glog = !$HG log -G
 # undo local changes (new files will not be removed)
 reset = !$HG update -C
 
+[pager]
+pager = LESS='FRX' less
+attend = log
+
 [extensions]
 # http://mercurial.selenic.com/wiki/ShelveExtension
-shelve=
+shelve =
 
 # http://mercurial.selenic.com/wiki/ExtdiffExtension
 hgext.extdiff =
@@ -23,6 +27,9 @@ graphlog =
 
 # http://mercurial.selenic.com/wiki/RebaseExtension
 rebase =
+
+# http://mercurial.selenic.com/wiki/PagerExtension
+pager =
 
 [extdiff]
 # run via command: $ hg vdiff
