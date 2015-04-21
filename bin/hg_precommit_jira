@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ABORT_BANNER="Bad commit message. Please specify JIRA task ID\n "
+hg log -r $1 --template {desc} | grep -q -P '^[A-Z]{2,3}-[0-9]{3,5}' || (echo $ABORT_BANNER && exit 1)
+

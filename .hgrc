@@ -34,3 +34,7 @@ pager =
 [extdiff]
 # run via command: $ hg vdiff
 cmd.vdiff = meld
+
+[hooks]
+## This hook will decline commit with bad commit message (missed task id)
+pretxncommit = ~/bin/hg_precommit_jira $HG_NODE
