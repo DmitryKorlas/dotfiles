@@ -25,6 +25,9 @@ color =
 # http://mercurial.selenic.com/wiki/GraphlogExtension
 graphlog =
 
+# https://mercurial.selenic.com/wiki/HisteditExtension
+histedit =
+
 # http://mercurial.selenic.com/wiki/RebaseExtension
 rebase =
 
