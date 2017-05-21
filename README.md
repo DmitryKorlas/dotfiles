@@ -1,4 +1,3 @@
-dotfiles
-========
+#dotfiles
 
-Few config files for Linux
+Few config files for osx/Linux
