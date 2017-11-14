@@ -22,7 +22,12 @@
 #    #cmd = meld --diff $BASE $LOCAL --diff $BASE $REMOTE --diff $LOCAL $MERGED $REMOTE
 
 [diff]
-    external = mymeld-diff
-
+    tool = mymeld-diff
+    cmd = meld $2 $5
 [alias]
     glog = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+[push]
+  default = current
+[core]
+	autocrlf = input
+	eol = lf

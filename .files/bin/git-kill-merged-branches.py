@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFo
 parser.add_argument('--hours',
 					help='A duration of branch inactivity in a hours '+
 						 '(means the period from the time of last commit in branch to now).',
-					default=24*10, # 10 days
+					default=24*14, # 14 days
 					type=int,
 					required=False)
 
@@ -24,10 +24,10 @@ colors = {
 def get_merged_branches():
 	try:
 		branches_output = check_output(
-			'git branch --remote --merged | grep -iP "/(?:dev|fix|feature)-"',
+			'git branch --remote --merged | grep -iP "(?:/[A-Z]{3}-\d+|[A-Z]{3}-\d+$)"',
 			stderr=subprocess.STDOUT,
 			shell=True
-		).strip()
+		).strip()		
 	except subprocess.CalledProcessError as e:
 		print e.output
 		branches_output = ''
@@ -78,10 +78,18 @@ def show_dead_branches(branches):
 def kill_branches(branches):
 	for branch in branches:
 		print 'removing branch "{}"'.format(branch)
-		print check_output('git push origin --delete '+ branch, shell=True)
-		print check_output('git branch -d '+ branch, shell=True)
+		print 'remove remote branch'
+		run_shell_command('git push origin --delete '+ branch)
+		print 'remove local branch'
+		run_shell_command('git branch -d '+ branch)
 
-	print check_output('git fetch --all --prune', shell=True)
+	run_shell_command('git fetch --all --prune')
+
+def run_shell_command(cmd):
+	try:
+		print check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+	except subprocess.CalledProcessError as e:
+		print e.output
 
 def main():
 	retval = 0
@@ -97,7 +105,7 @@ def main():
 			))
 
 		branch_names = [branch_info['branch_name'] for branch_info in dead_branches]
-		branch_names = [name.replace('origin/', '') for name in branch_names]
+		branch_names = [name.replace('origin/', '').strip() for name in branch_names]
 
 		if (answer.lower() == 'y' or answer.lower() == 'yes'):
 			# ask second time to confirm
