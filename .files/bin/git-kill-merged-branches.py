@@ -21,7 +21,7 @@ def get_merged_branches():
             shell=True
         ).strip()
     except subprocess.CalledProcessError as e:
-        print e.output
+        print(e.output)
         branches_output = ''
 
     branches = []
@@ -79,7 +79,7 @@ def get_dead_branches(branches, hours):
 
 def show_dead_branches(branches):
     for formatted_entry in branches:
-        print (formatted_entry)
+        print(formatted_entry)
 
 
 def format_dead_branches(branches):
@@ -101,10 +101,10 @@ def format_dead_branches(branches):
 
 def kill_branches(branches):
     for branch in branches:
-        print 'removing branch "{}"'.format(branch)
-        print 'remove remote branch'
+        print('removing branch "{}"'.format(branch))
+        print('remove remote branch')
         run_shell_command('git push origin --delete ' + branch)
-        print 'remove local branch'
+        print('remove local branch')
         run_shell_command('git branch -d ' + branch)
 
     run_shell_command('git fetch --all --prune')
@@ -112,9 +112,9 @@ def kill_branches(branches):
 
 def run_shell_command(cmd):
     try:
-        print check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+        print(check_output(cmd, stderr=subprocess.STDOUT, shell=True))
     except subprocess.CalledProcessError as e:
-        print e.output
+        print(e.output)
 
 
 def strip_branch_name(branch_info):
@@ -129,13 +129,13 @@ def strip_colors(message):
     return message
 
 
-def main(hours, file=None):
+def main(hours, input_file=None):
     retval = 0
 
-    if file is None:
+    if input_file is None:
         branches = get_merged_branches()
     else:
-        branches = get_branches_from_file(file)
+        branches = get_branches_from_file(input_file)
 
     dead_branches = get_dead_branches(branches, hours)
 
@@ -144,11 +144,10 @@ def main(hours, file=None):
         show_dead_branches(formatted_entries)
 
         answer = raw_input(
-            '{red}Are you sure you want to remove this {amount} branches (y/yes)?{reset}\n'
+            '{colors[red]}Are you sure you want to remove this {amount} branches (y/yes)?{colors[reset]}\n'
             .format(
-                red=COLORS['red'],
-                amount=len(dead_branches),
-                reset=COLORS['reset']
+                colors=COLORS,
+                amount=len(dead_branches)
             ))
 
         branch_names = list(map(strip_branch_name, dead_branches))
@@ -161,10 +160,10 @@ def main(hours, file=None):
         write_list_to_file(branch_names, log_brief_filename)
         write_list_to_file(list(map(strip_colors, formatted_entries)), log_detailed_filename)
 
-        print 'write log files "{file_brief}", "{file_detailed}"'.format(
+        print('write log files "{file_brief}", "{file_detailed}"'.format(
             file_brief=log_brief_filename,
             file_detailed=log_detailed_filename
-        )
+        ))
 
         if answer.lower() == 'y' or answer.lower() == 'yes':
             # ask second time to confirm
@@ -176,12 +175,12 @@ def main(hours, file=None):
             if answer == 'Yes':
                 kill_branches(branch_names)
             else:
-                print 'skip'
+                print('skip')
                 retval = 1
         else:
             retval = 1
     else:
-        print 'There are no branches to remove'
+        print('There are no branches to remove')
     sys.exit(retval)
 
 
@@ -204,4 +203,4 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    main(args.hours, file=args.file)
+    main(args.hours, input_file=args.file)
