@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import os
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import datetime
 import subprocess
@@ -16,7 +17,7 @@ COLORS = {
 def get_merged_branches():
     try:
         branches_output = check_output(
-            'git branch --remote --merged | grep -iP "[A-Z]{3}-\\d+"',
+            'git branch --remote --merged | grep -iP "[A-Z]{2,3}-\\d+"',
             stderr=subprocess.STDOUT,
             shell=True
         ).strip()
@@ -129,7 +130,7 @@ def strip_colors(message):
     return message
 
 
-def main(hours, input_file=None):
+def main(hours, input_file=None, log_prefix=''):
     retval = 0
 
     if input_file is None:
@@ -154,8 +155,8 @@ def main(hours, input_file=None):
 
         now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
-        log_brief_filename = 'killed-brief-{now}.txt'.format(now=now)
-        log_detailed_filename = 'killed-detailed-{now}.txt'.format(now=now)
+        log_brief_filename = 'killed{log_prefix}-brief-{now}.txt'.format(now=now, log_prefix=log_prefix)
+        log_detailed_filename = 'killed{log_prefix}-detailed-{now}.txt'.format(now=now, log_prefix=log_prefix)
 
         write_list_to_file(branch_names, log_brief_filename)
         write_list_to_file(list(map(strip_colors, formatted_entries)), log_detailed_filename)
@@ -203,4 +204,6 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    main(args.hours, input_file=args.file)
+    current_dir_name = os.path.basename(os.getcwd())
+
+    main(args.hours, input_file=args.file, log_prefix='-' + current_dir_name)
