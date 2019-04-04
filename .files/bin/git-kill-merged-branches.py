@@ -139,8 +139,9 @@ def main(hours, input_file=None, log_prefix=''):
         branches = get_branches_from_file(input_file)
 
     dead_branches = get_dead_branches(branches, hours)
+    dead_branches_amount = len(dead_branches)
 
-    if len(dead_branches) > 0:
+    if dead_branches_amount > 0:
         formatted_entries = format_dead_branches(dead_branches)
         show_dead_branches(formatted_entries)
 
@@ -148,7 +149,7 @@ def main(hours, input_file=None, log_prefix=''):
             '{colors[red]}Are you sure you want to remove this {amount} branches (y/yes)?{colors[reset]}\n'
             .format(
                 colors=COLORS,
-                amount=len(dead_branches)
+                amount=dead_branches_amount
             ))
 
         branch_names = list(map(strip_branch_name, dead_branches))
@@ -157,9 +158,10 @@ def main(hours, input_file=None, log_prefix=''):
 
         log_brief_filename = 'killed{log_prefix}-brief-{now}.txt'.format(now=now, log_prefix=log_prefix)
         log_detailed_filename = 'killed{log_prefix}-detailed-{now}.txt'.format(now=now, log_prefix=log_prefix)
+        banner = 'Affected branches: {amount}\n'.format(amount=dead_branches_amount)
 
         write_list_to_file(branch_names, log_brief_filename)
-        write_list_to_file(list(map(strip_colors, formatted_entries)), log_detailed_filename)
+        write_list_to_file([banner] + list(map(strip_colors, formatted_entries)), log_detailed_filename)
 
         print('write log files "{file_brief}", "{file_detailed}"'.format(
             file_brief=log_brief_filename,
