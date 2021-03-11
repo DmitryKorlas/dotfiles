@@ -3,6 +3,10 @@ function f() {
     find . -name "$1"
 }
 
+function phan() { 
+  docker run -v $PWD:/mnt/src --rm -u "$(id -u):$(id -g)" cloudflare/phan:latest $@; return $?; 
+}
+
 # Syntax-highlight JSON strings or files
 function json() {
 	if [ -p /dev/stdin ]; then
